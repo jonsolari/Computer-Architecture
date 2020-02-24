@@ -72,4 +72,15 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        ir = self.reg[self.pc]
+        operand_a = self.ram_read((self.pc+1))
+        operand_b = self.ram_read((self.pc+2))
+        
+        if ir == 0b10000010:
+            self.reg[operand+a] = self.ram_read(operand_b)
+            ir += 3
+        elif ir == 0b01000111:
+            print(self.reg[operand_a])
+            ir +=2
+        elif ir == 0b00000001:
+            sys.exit(0)
