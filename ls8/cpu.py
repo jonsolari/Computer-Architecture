@@ -14,10 +14,8 @@ class CPU:
     def ram_read(self, address):
         return self.ram[address]
     
-    def ram_write(self, address, value):
+    def ram_write(self, value, address):
         self.ram[address] = value
-
-
 
     def load(self):
         """Load a program into memory."""
@@ -72,15 +70,19 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        ir = self.reg[self.pc]
-        operand_a = self.ram_read((self.pc+1))
-        operand_b = self.ram_read((self.pc+2))
-        
-        if ir == 0b10000010:
-            self.reg[operand+a] = self.ram_read(operand_b)
-            ir += 3
-        elif ir == 0b01000111:
-            print(self.reg[operand_a])
-            ir +=2
-        elif ir == 0b00000001:
-            sys.exit(0)
+       
+        while True:
+            ir = self.ram_read(self.pc)
+            operand_a = self.ram_read(self.pc+1)
+            operand_b = self.ram_read(self.pc+2)
+
+            if ir == 0b10000010 or ir == "LDI":
+                self.reg[operand_a] = operand_b
+                self.pc += 3
+            elif ir == 0b01000111 or ir == "PRN":
+                print(self.reg[operand_a])
+                self.pc += 2
+            elif ir == 0b00000001 or ir == "HLT":
+                sys.exit(0)
+                
+
