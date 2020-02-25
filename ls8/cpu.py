@@ -28,24 +28,13 @@ class CPU:
                     value = line.rstrip()
                     if value == "":
                         continue
-                    num = '{0:08}'.format(int(value))
-                    print(num)
+                    num = int(value, 2)
                     self.ram_write(num, address)
                     address += 1
         except FileNotFoundError:
-            print("File not found")
-
-
+            print("File not found")    
+            sys.exit(2)
         
-        print(self.ram)
-
-        # For now, we've just hardcoded a program:
-
-      
-
-        
-           
-
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -53,7 +42,7 @@ class CPU:
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "SUB":
-            self.reg[reg_a] += self.reg[reg_b]
+            self.reg[reg_a] -= self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
         else:
@@ -81,7 +70,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-       
+        
         while True:
             ir = self.ram_read(self.pc)
             operand_a = self.ram_read(self.pc+1)
@@ -95,5 +84,8 @@ class CPU:
                 self.pc += 2
             elif ir == 0b00000001 or ir == "HLT":
                 sys.exit(0)
+            elif ir == 0b10100010 or ir == "MUL":
+                self.alu("MUL", self.reg[operand_a], self.reg[operand_b])
+                print(self.reg[operand_a])
                 
 
