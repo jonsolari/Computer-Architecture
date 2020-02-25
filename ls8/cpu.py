@@ -85,7 +85,7 @@ class CPU:
             elif ir == 0b00000001 or ir == "HLT":
                 sys.exit(0)
             elif ir == 0b10100010 or ir == "MUL":
-                self.alu("MUL", self.reg[operand_a], self.reg[operand_b])
-                print(self.reg[operand_a])
+                self.alu("MUL", operand_a, operand_b)
+                self.pc += 3
                 
 
