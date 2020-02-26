@@ -70,11 +70,13 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        
+        sp = 255
         while True:
             ir = self.ram_read(self.pc)
             operand_a = self.ram_read(self.pc+1)
             operand_b = self.ram_read(self.pc+2)
+            
+            self.reg[7] = sp
 
             if ir == 0b10000010 or ir == "LDI":
                 self.reg[operand_a] = operand_b
@@ -87,5 +89,16 @@ class CPU:
             elif ir == 0b10100010 or ir == "MUL":
                 self.alu("MUL", operand_a, operand_b)
                 self.pc += 3
+            elif ir == 0b01000101 or ir == "PUSH":
+                sp -= 1
+                self.ram_write(self.reg[operand_a], sp)
+                self.pc += 2
+            elif ir == 0b01000110 or ir == "POP":
+                self.reg[operand_a] = self.ram_read(sp)
+                sp +=1
+                
+                self.pc += 2
+                
+
                 
 
