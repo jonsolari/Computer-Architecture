@@ -86,6 +86,9 @@ class CPU:
                 self.pc += 2
             elif ir == 0b00000001 or ir == "HLT":
                 sys.exit(0)
+            elif ir == 0b10100000 or ir == "ADD":
+                self.alu("ADD", operand_a, operand_b)
+                self.pc += 3
             elif ir == 0b10100010 or ir == "MUL":
                 self.alu("MUL", operand_a, operand_b)
                 self.pc += 3
@@ -98,9 +101,13 @@ class CPU:
                 sp +=1
                 self.pc += 2
             elif ir == 0b01010000 or ir == "CALL":
-                pass
+                sp -= 1
+                self.ram_write(self.pc, sp)
+                self.pc = self.reg[operand_a]
             elif ir == 0b00010001 or ir == "RET":
-                pass
+                self.pc = self.ram_read(sp) + 2
+                sp += 1
+                
                 
 
                 
