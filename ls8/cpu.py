@@ -96,8 +96,11 @@ class CPU:
             elif ir == 0b01000110 or ir == "POP":
                 self.reg[operand_a] = self.ram_read(sp)
                 sp +=1
-                
                 self.pc += 2
+            elif ir == 0b01010000 or ir == "CALL":
+                pass
+            elif ir == 0b00010001 or ir == "RET":
+                pass
                 
 
                 
