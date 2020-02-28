@@ -10,6 +10,7 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.ram = [0] * 256
+        self.fl = 0
         
     
     def ram_read(self, address):
@@ -45,6 +46,13 @@ class CPU:
             self.reg[reg_a] -= self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "CMP":
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.fl = 0b00000100
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.fl = 0b00000010
+            elif self.reg[reg_a] == self.reg[reg_b]:
+                self.fl = 0b00000001
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -56,7 +64,7 @@ class CPU:
 
         print(f"TRACE: %02X | %02X %02X %02X |" % (
             self.pc,
-            #self.fl,
+            self.fl,
             #self.ie,
             self.ram_read(self.pc),
             self.ram_read(self.pc + 1),
@@ -107,8 +115,18 @@ class CPU:
             elif ir == 0b00010001 or ir == "RET":
                 self.pc = self.ram_read(sp) + 2
                 sp += 1
-                
-                
-
-                
-
+            elif ir == 0b10100111 or ir == "CMP":
+                self.alu("CMP", operand_a, operand_b)
+                self.pc += 3
+            elif ir == 0b01010100 or ir == "JMP":
+                self.pc = self.reg[operand_a]   
+            elif ir == 0b01010101 or ir == "JEQ":
+                if self.fl == 0b00000001:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
+            elif ir == 0b01010110 or ir == "JNE":
+                if self.fl == 0b00000010 or self.fl == 0b00000100:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
